@@ -7,8 +7,8 @@
     <title>@yield('title', 'PortApps - Authentication')</title>
     
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="{{ asset('assets/image/logo.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('assets/image/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('favicon.png') }}">
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
