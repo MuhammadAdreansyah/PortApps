@@ -46,8 +46,6 @@
         
         .page-content {
             min-height: 100vh;
-            height: 100vh;
-            overflow: hidden;
             display: flex;
         }
         
@@ -55,10 +53,8 @@
         #formColumn {
             transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.5s ease;
             position: relative;
-            overflow-y: auto;
-            overflow-x: hidden;
-            height: 100vh;
             flex-shrink: 0;
+            min-height: 100vh;
         }
         
         /* Lock hero section position */
@@ -69,6 +65,7 @@
             bottom: 0;
             width: 58.333333%;
             height: 100vh;
+            overflow: hidden;
         }
         
         @media (min-width: 1280px) {
@@ -169,9 +166,11 @@
         }
     </style>
     
+    @notifyCss
     @stack('styles')
 </head>
 <body class="bg-gray-50 antialiased">
+    <x-notify::notify />
     <div class="page-container">
         <div id="pageContent" class="page-content flex flex-col lg:flex-row">
             <!-- Left Column - Form Content -->
@@ -286,6 +285,7 @@
     <!-- Navigation Script -->
     <script src="{{ asset('assets/navigation.js') }}"></script>
     
+    @notifyJs
     @stack('scripts')
 </body>
 </html>

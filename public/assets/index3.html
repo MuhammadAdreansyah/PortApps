@@ -1,22 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sellora - Login</title>
+    <title>PortApps - Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* Custom animations */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -27,493 +16,364 @@
                 transform: translateY(0);
             }
         }
-        
+
         .animate-fade-in {
-            animation: fadeIn 0.5s ease-out;
-        }
-        
-        /* Custom focus styles */
-        input:focus {
-            outline: none;
-            border-color: #6366f1;
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
-        }
-        
-        /* Checkbox styling */
-        input[type="checkbox"]:checked {
-            background-color: #6366f1;
-            border-color: #6366f1;
+            animation: fadeIn 0.6s ease-out;
         }
 
-        /* Image Slider Styles */
+        /* Curved corner shapes */
+        .curved-corner-top-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 400px;
+            background: #23237E;
+            border-bottom-left-radius: 100%;
+            z-index: 1;
+        }
+
+        .curved-corner-bottom-right {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 350px;
+            height: 350px;
+            background: #23237E;
+            border-top-left-radius: 100%;
+            z-index: 1;
+        }
+
+        .curved-corner-top-left {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            background: #23237E;
+            border-bottom-right-radius: 100%;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .curved-corner-bottom-left {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 300px;
+            height: 300px;
+            background: #23237E;
+            border-top-right-radius: 100%;
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        /* Content overlay */
+        .info-content {
+            position: absolute;
+            top: 50%;
+            right: 80px;
+            transform: translateY(-50%);
+            z-index: 2;
+            max-width: 450px;
+            color: white;
+        }
+
+        .form-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .curved-corner-top-right,
+            .curved-corner-bottom-right {
+                width: 250px;
+                height: 250px;
+            }
+            
+            .curved-corner-top-left,
+            .curved-corner-bottom-left {
+                width: 200px;
+                height: 200px;
+            }
+
+            .info-content {
+                right: 40px;
+                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .curved-corner-top-right,
+            .curved-corner-bottom-right,
+            .curved-corner-top-left,
+            .curved-corner-bottom-left {
+                display: none;
+            }
+
+            .info-content {
+                display: none;
+            }
+        }
+
+        /* Slider styles */
         .slider-container {
             position: relative;
+            width: 100%;
+            max-width: 500px;
+            aspect-ratio: 16/10;
             overflow: hidden;
-            border-radius: 1.5rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
-        .slider-wrapper {
+        .slider {
             display: flex;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
         }
 
         .slider-slide {
             min-width: 100%;
-            position: relative;
+            height: 100%;
         }
 
         .slider-slide img {
             width: 100%;
-            height: auto;
-            display: block;
+            height: 100%;
             object-fit: cover;
         }
 
-        /* Navigation Dots */
         .slider-dots {
             position: absolute;
-            bottom: 1.5rem;
+            bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             display: flex;
-            gap: 0.5rem;
-            z-index: 10;
+            gap: 8px;
+            z-index: 3;
         }
 
         .slider-dot {
-            width: 0.5rem;
-            height: 0.5rem;
-            border-radius: 9999px;
-            background-color: rgba(255, 255, 255, 0.5);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            border: none;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.3s;
         }
 
         .slider-dot.active {
-            width: 2rem;
-            background-color: white;
-        }
-
-        .slider-dot:hover {
-            background-color: rgba(255, 255, 255, 0.8);
-        }
-
-        /* Navigation Arrows */
-        .slider-arrow {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            width: 3rem;
-            height: 3rem;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 10;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(8px);
-        }
-
-        .slider-arrow:hover {
             background: white;
-            transform: translateY(-50%) scale(1.1);
+            width: 30px;
+            border-radius: 5px;
         }
 
-        .slider-arrow.prev {
-            left: 1rem;
-        }
-
-        .slider-arrow.next {
-            right: 1rem;
-        }
-
-        .slider-arrow svg {
-            width: 1.5rem;
-            height: 1.5rem;
-            color: #6366f1;
-        }
-
-        /* Loading skeleton */
-        @keyframes shimmer {
-            0% {
-                background-position: -1000px 0;
-            }
-            100% {
-                background-position: 1000px 0;
-            }
-        }
-
-        .loading-skeleton {
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-            background-size: 1000px 100%;
-            animation: shimmer 2s infinite;
+        /* Pattern overlay */
+        .pattern-overlay {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.05;
+            background-image: radial-gradient(circle, white 1px, transparent 1px);
+            background-size: 30px 30px;
+            z-index: 1;
+            pointer-events: none;
         }
     </style>
 </head>
-<body class="bg-gray-50 antialiased">
-    <div class="min-h-screen flex flex-col lg:flex-row">
-        <!-- Left Column - Login Form -->
-        <div class="w-full lg:w-5/12 xl:w-2/5 bg-white flex flex-col">
-            <div class="flex-1 flex flex-col px-6 py-8 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-                <!-- Logo -->
-                <div class="mb-8 lg:mb-12 animate-fade-in">
-                    <a href="#" class="inline-flex items-center gap-2 group">
-                        <div class="relative">
-                            <svg class="w-9 h-9 text-indigo-600 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="currentColor" fill-opacity="0.1"/>
-                                <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                                <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <span class="text-xl font-bold text-gray-900">Sellora</span>
-                    </a>
-                </div>
+<body class="min-h-screen bg-gray-50 overflow-x-hidden">
+    <!-- Main Container -->
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+        
+        <!-- Curved Corner Decorations -->
+        <div class="curved-corner-top-right"></div>
+        <div class="curved-corner-bottom-right"></div>
+        <div class="curved-corner-top-left"></div>
+        <div class="curved-corner-bottom-left"></div>
+        <div class="pattern-overlay"></div>
 
-                <!-- Form Content -->
-                <div class="flex-1 flex flex-col justify-center max-w-md mx-auto w-full animate-fade-in">
-                    <!-- Header -->
-                    <div class="mb-8">
-                        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3 leading-tight">
-                            Welcome Back
-                        </h1>
-                        <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
-                            Log in to access your CRM dashboard and manage your team.
-                        </p>
+        <!-- Info Content (Floating on Right) -->
+        <div class="info-content hidden lg:block">
+            <div class="mb-8">
+                <h2 class="text-4xl font-bold mb-4">Selamat Datang di PortApps</h2>
+                <p class="text-lg text-white/90 mb-8">
+                    Masuk untuk mengakses dashboard admin dan mengelola kegiatan bongkar muat kapal dengan lebih efisien.
+                </p>
+            </div>
+
+            <!-- Image Slider -->
+            <div class="slider-container">
+                <div id="slider" class="slider">
+                    <div class="slider-slide">
+                        <img src="https://placehold.co/800x500/6366f1/ffffff?text=Dashboard+1" alt="Dashboard 1">
                     </div>
-
-                    <!-- Form -->
-                    <form class="space-y-5" onsubmit="event.preventDefault(); alert('Login functionality here');">
-                        <!-- Email Field -->
-                        <div>
-                            <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Email
-                            </label>
-                            <input 
-                                type="email" 
-                                id="email"
-                                name="email"
-                                value="sellostore@company.com"
-                                placeholder="Enter your email"
-                                required
-                                class="w-full px-4 py-3.5 text-gray-900 bg-white border border-gray-300 rounded-xl transition-all duration-200 placeholder:text-gray-400 hover:border-gray-400"
-                            />
-                        </div>
-
-                        <!-- Password Field -->
-                        <div>
-                            <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
-                                Password
-                            </label>
-                            <div class="relative">
-                                <input 
-                                    type="password" 
-                                    id="password"
-                                    name="password"
-                                    value="Sellostore."
-                                    placeholder="Enter your password"
-                                    required
-                                    class="w-full px-4 py-3.5 text-gray-900 bg-white border border-gray-300 rounded-xl transition-all duration-200 pr-12 placeholder:text-gray-400 hover:border-gray-400"
-                                />
-                                <button 
-                                    type="button" 
-                                    onclick="togglePassword()"
-                                    class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
-                                    aria-label="Toggle password visibility"
-                                >
-                                    <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                                    </svg>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Remember Me & Forgot Password -->
-                        <div class="flex items-center justify-between pt-1">
-                            <label class="flex items-center cursor-pointer group">
-                                <input 
-                                    type="checkbox" 
-                                    id="remember"
-                                    class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-2 focus:ring-indigo-500 focus:ring-offset-0 cursor-pointer transition-all"
-                                >
-                                <span class="ml-2.5 text-sm text-gray-700 select-none group-hover:text-gray-900 transition-colors">
-                                    Remember Me
-                                </span>
-                            </label>
-                            <a 
-                                href="#" 
-                                class="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
-                            >
-                                Forgot Password?
-                            </a>
-                        </div>
-
-                        <!-- Login Button -->
-                        <button 
-                            type="submit"
-                            class="w-full bg-indigo-600 text-white py-4 rounded-xl font-semibold text-base hover:bg-indigo-700 active:bg-indigo-800 transition-all duration-200 shadow-lg shadow-indigo-600/20 hover:shadow-xl hover:shadow-indigo-600/30 hover:-translate-y-0.5 mt-6"
-                        >
-                            Log In
-                        </button>
-                    </form>
-
-                    <!-- Divider -->
-                    <div class="my-8">
-                        <div class="relative">
-                            <div class="absolute inset-0 flex items-center">
-                                <div class="w-full border-t border-gray-200"></div>
-                            </div>
-                            <div class="relative flex justify-center text-sm">
-                                <span class="px-4 bg-white text-gray-500 font-medium">Or Log In With</span>
-                            </div>
-                        </div>
+                    <div class="slider-slide">
+                        <img src="https://placehold.co/800x500/6366f1/ffffff?text=Dashboard+2" alt="Dashboard 2">
                     </div>
-
-                    <!-- Social Login Buttons -->
-                    <div class="grid grid-cols-2 gap-3 sm:gap-4">
-                        <button 
-                            type="button"
-                            class="flex items-center justify-center gap-3 px-4 py-3.5 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100 transition-all duration-200 group"
-                        >
-                            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
-                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                            </svg>
-                            <span class="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">
-                                Google
-                            </span>
-                        </button>
-                        <button 
-                            type="button"
-                            class="flex items-center justify-center gap-3 px-4 py-3.5 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100 transition-all duration-200 group"
-                        >
-                            <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
-                            </svg>
-                            <span class="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">
-                                Apple
-                            </span>
-                        </button>
-                    </div>
-
-                    <!-- Sign Up Link -->
-                    <div class="text-center mt-8">
-                        <p class="text-sm text-gray-600">
-                            Don't have an account? 
-                            <a href="#" class="font-semibold text-indigo-600 hover:text-indigo-700 transition-colors ml-1">
-                                Sign Up
-                            </a>
-                        </p>
+                    <div class="slider-slide">
+                        <img src="https://placehold.co/800x500/6366f1/ffffff?text=Dashboard+3" alt="Dashboard 3">
                     </div>
                 </div>
-
-                <!-- Footer -->
-                <div class="mt-8 lg:mt-12 pt-6 border-t border-gray-200">
-                    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-gray-500">
-                        <p class="text-center sm:text-left">
-                            Copyright © 2025 Sellora Enterprises LTD.
-                        </p>
-                        <a href="#" class="hover:text-gray-700 transition-colors font-medium">
-                            Privacy Policy
-                        </a>
-                    </div>
-                </div>
+                <div id="slider-dots" class="slider-dots"></div>
             </div>
         </div>
 
-        <!-- Right Column - Hero Section with Image Slider -->
-        <div class="hidden lg:flex lg:w-7/12 xl:w-3/5 bg-gradient-to-br from-indigo-600 via-indigo-600 to-indigo-700 relative overflow-hidden">
-            <!-- Background Decorations -->
-            <div class="absolute inset-0 overflow-hidden">
-                <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-500 rounded-full opacity-20 blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-                <div class="absolute bottom-0 left-0 w-96 h-96 bg-indigo-400 rounded-full opacity-20 blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
-            </div>
-
-            <div class="relative z-10 flex items-center justify-center w-full p-12 xl:p-16">
-                <div class="max-w-2xl w-full">
-                    <!-- Hero Content -->
-                    <div class="mb-12 animate-fade-in">
-                        <h2 class="text-4xl xl:text-5xl font-bold text-white mb-6 leading-tight">
-                            Effortlessly manage your team and operations.
-                        </h2>
-                        <p class="text-indigo-100 text-lg xl:text-xl leading-relaxed">
-                            Log in to access your CRM dashboard and manage your team.
-                        </p>
+        <!-- Form Content (Centered) -->
+        <div class="form-content w-full max-w-md mx-auto">
+            <div class="bg-white rounded-3xl shadow-2xl p-8 md:p-10 animate-fade-in">
+                <!-- Header -->
+                <div class="mb-8">
+                    <div class="flex items-center gap-1.5 mb-1">
+                        <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 leading-tight inline-block">
+                            Selamat Datang
+                        </h1>
+                        <span class="text-4xl">👋</span>
                     </div>
-                    
-                    <!-- Image Slider -->
-                    <div class="relative animate-fade-in slider-container" style="animation-delay: 0.2s;">
-                        <div id="slider" class="slider-wrapper">
-                            <!-- Slides will be dynamically inserted here -->
+                    <p class="text-gray-600 text-sm sm:text-base leading-relaxed">
+                        Masukkan email dan kata sandi Anda untuk mengakses akun.
+                    </p>
+                </div>
+
+                <!-- Form -->
+                <form class="space-y-5">
+                    <!-- Email Field -->
+                    <div>
+                        <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Email
+                        </label>
+                        <input 
+                            type="email" 
+                            id="email"
+                            placeholder="Enter your email"
+                            required
+                            class="w-full px-4 py-3.5 text-gray-900 bg-white border border-gray-300 rounded-xl transition-all duration-200 placeholder:text-gray-400 hover:border-gray-400 focus:border-[#23237E] focus:ring-2 focus:ring-[#23237E]/20 outline-none"
+                        />
+                    </div>
+
+                    <!-- Password Field -->
+                    <div>
+                        <label for="password" class="block text-sm font-semibold text-gray-700 mb-2">
+                            Kata Sandi
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="password"
+                                placeholder="••••••••"
+                                required
+                                class="w-full px-4 py-3.5 text-gray-900 bg-white border border-gray-300 rounded-xl transition-all duration-200 pr-12 placeholder:text-gray-400 hover:border-gray-400 focus:border-[#23237E] focus:ring-2 focus:ring-[#23237E]/20 outline-none"
+                            />
+                            <button 
+                                type="button" 
+                                onclick="togglePassword()"
+                                class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors focus:outline-none"
+                            >
+                                <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                </svg>
+                            </button>
                         </div>
+                    </div>
 
-                        <!-- Navigation Arrows -->
-                        <button class="slider-arrow prev" onclick="changeSlide(-1)" aria-label="Previous slide">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                            </svg>
-                        </button>
-                        <button class="slider-arrow next" onclick="changeSlide(1)" aria-label="Next slide">
-                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-                            </svg>
-                        </button>
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="flex items-center justify-between pt-1">
+                        <label class="flex items-center cursor-pointer group">
+                            <input 
+                                type="checkbox" 
+                                id="remember"
+                                class="w-5 h-5 border-2 border-gray-300 rounded cursor-pointer transition-all duration-200 text-[#23237E] focus:ring-2 focus:ring-[#23237E]/20"
+                            >
+                            <span class="ml-3 text-sm text-gray-700 select-none group-hover:text-gray-900 transition-colors">
+                                Remember Me
+                            </span>
+                        </label>
+                        <a 
+                            href="#" 
+                            class="text-sm font-semibold text-[#23237E] hover:opacity-80 transition-opacity"
+                        >
+                            Lupa Kata Sandi?
+                        </a>
+                    </div>
 
-                        <!-- Navigation Dots -->
-                        <div id="slider-dots" class="slider-dots">
-                            <!-- Dots will be dynamically inserted here -->
+                    <!-- Login Button -->
+                    <button 
+                        type="submit"
+                        class="w-full bg-[#23237E] text-white py-4 rounded-xl font-semibold text-base transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5 hover:bg-[#23237E]/90 mt-6"
+                    >
+                        Masuk
+                    </button>
+                </form>
+
+                <!-- Divider -->
+                <div class="my-8">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-200"></div>
                         </div>
-
-                        <!-- Decorative Glow Effects -->
-                        <div class="absolute -top-6 -right-6 w-32 h-32 bg-white rounded-full opacity-10 blur-2xl pointer-events-none"></div>
-                        <div class="absolute -bottom-6 -left-6 w-40 h-40 bg-white rounded-full opacity-10 blur-3xl pointer-events-none"></div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-4 bg-white text-gray-500 font-medium">Or Log In With</span>
+                        </div>
                     </div>
                 </div>
+
+                <!-- Social Login Buttons -->
+                <div class="grid grid-cols-2 gap-3 sm:gap-4">
+                    <button 
+                        type="button"
+                        class="flex items-center justify-center gap-3 px-4 py-3.5 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100 transition-all duration-200 group"
+                    >
+                        <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                        </svg>
+                        <span class="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">
+                            Google
+                        </span>
+                    </button>
+                    <button 
+                        type="button"
+                        class="flex items-center justify-center gap-3 px-4 py-3.5 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100 transition-all duration-200 group opacity-50 cursor-not-allowed"
+                        disabled
+                    >
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                        </svg>
+                        <span class="text-sm font-semibold text-gray-700 group-hover:text-gray-900 transition-colors">
+                            SSO
+                        </span>
+                    </button>
+                </div>
+
+                <!-- Sign Up Link -->
+                <div class="text-center mt-8">
+                    <p class="text-sm text-gray-600">
+                        Belum punya akun? 
+                        <a href="#" class="font-semibold text-[#23237E] hover:opacity-80 transition-opacity ml-1">
+                            Daftar Sekarang
+                        </a>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Mobile Info -->
+            <div class="lg:hidden mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Sistem manajemen pelabuhan yang efisien dan modern
+                </p>
             </div>
         </div>
     </div>
 
     <script>
-        // ============================================
-        // IMAGE SLIDER CONFIGURATION
-        // ============================================
-        // CARA PENGGUNAAN:
-        // 1. Simpan gambar Anda di folder: assets/image/
-        // 2. Tambahkan nama file gambar ke array 'images' di bawah ini
-        // 3. Contoh: 'dashboard-1.png', 'dashboard-2.jpg', 'crm-view.png'
-        // 
-        // CATATAN: Slider akan otomatis membaca semua gambar dari array ini
-        // dan menampilkannya secara berurutan dengan transisi yang smooth
-        // ============================================
-
-        const sliderConfig = {
-            // Daftar gambar yang akan ditampilkan di slider
-            // Tambahkan atau kurangi sesuai kebutuhan
-            images: [
-                'image/dashboard-1.png',  // Ganti dengan nama file gambar Anda
-                'image/dashboard-2.png',  // Ganti dengan nama file gambar Anda
-                'image/dashboard-3.png'  // Ganti dengan nama file gambar Anda
-                // Tambahkan lebih banyak gambar di sini jika diperlukan
-                // 'image/dashboard-2.png',
-                // 'image/dashboard-3.png',
-            ],
-            
-            // Interval pergantian slide otomatis (dalam milidetik)
-            autoPlayInterval: 4000, // 4 detik
-            
-            // Aktifkan/nonaktifkan autoplay
-            autoPlay: true
-        };
-
-        // ============================================
-        // SLIDER FUNCTIONALITY - NO NEED TO EDIT BELOW
-        // ============================================
-        let currentSlide = 0;
-        let autoPlayTimer = null;
-
-        function initSlider() {
-            const slider = document.getElementById('slider');
-            const dotsContainer = document.getElementById('slider-dots');
-            
-            if (!slider || !dotsContainer) return;
-
-            // Clear existing content
-            slider.innerHTML = '';
-            dotsContainer.innerHTML = '';
-
-            // Create slides
-            sliderConfig.images.forEach((imagePath, index) => {
-                // Create slide
-                const slide = document.createElement('div');
-                slide.className = 'slider-slide';
-                
-                const img = document.createElement('img');
-                img.src = imagePath;
-                img.alt = `Dashboard view ${index + 1}`;
-                img.loading = 'lazy';
-                
-                // Add loading skeleton
-                img.onload = function() {
-                    this.classList.remove('loading-skeleton');
-                };
-                img.className = 'loading-skeleton';
-                
-                // Error handling - show placeholder if image fails to load
-                img.onerror = function() {
-                    this.src = `https://placehold.co/800x500/6366f1/ffffff?text=Dashboard+${index + 1}`;
-                    this.classList.remove('loading-skeleton');
-                };
-                
-                slide.appendChild(img);
-                slider.appendChild(slide);
-
-                // Create dot
-                const dot = document.createElement('button');
-                dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
-                dot.onclick = () => goToSlide(index);
-                dot.setAttribute('aria-label', `Go to slide ${index + 1}`);
-                dotsContainer.appendChild(dot);
-            });
-
-            // Start autoplay if enabled
-            if (sliderConfig.autoPlay) {
-                startAutoPlay();
-            }
-        }
-
-        function updateSlider() {
-            const slider = document.getElementById('slider');
-            const dots = document.querySelectorAll('.slider-dot');
-            
-            if (!slider) return;
-
-            // Move slider
-            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-
-            // Update dots
-            dots.forEach((dot, index) => {
-                if (index === currentSlide) {
-                    dot.classList.add('active');
-                } else {
-                    dot.classList.remove('active');
-                }
-            });
-        }
-
-        function changeSlide(direction) {
-            const totalSlides = sliderConfig.images.length;
-            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
-            updateSlider();
-            resetAutoPlay();
-        }
-
-        function goToSlide(index) {
-            currentSlide = index;
-            updateSlider();
-            resetAutoPlay();
-        }
-
-        function startAutoPlay() {
-            if (!sliderConfig.autoPlay) return;
-            
-            autoPlayTimer = setInterval(() => {
-                changeSlide(1);
-            }, sliderConfig.autoPlayInterval);
-        }
-
-        function resetAutoPlay() {
-            if (!sliderConfig.autoPlay) return;
-            
-            clearInterval(autoPlayTimer);
-            startAutoPlay();
-        }
-
+        // Toggle Password Visibility
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eye-icon');
@@ -527,43 +387,41 @@
             }
         }
 
-        // Initialize slider when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            initSlider();
+        // Image Slider
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slider-slide');
+        const slider = document.getElementById('slider');
+        const dotsContainer = document.getElementById('slider-dots');
 
-            // Keyboard accessibility
-            const form = document.querySelector('form');
-            if (form) {
-                form.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        form.dispatchEvent(new Event('submit'));
-                    }
-                });
-            }
-
-            // Keyboard navigation for slider
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'ArrowLeft') {
-                    changeSlide(-1);
-                } else if (e.key === 'ArrowRight') {
-                    changeSlide(1);
-                }
-            });
-
-            // Pause autoplay on hover
-            const sliderContainer = document.querySelector('.slider-container');
-            if (sliderContainer) {
-                sliderContainer.addEventListener('mouseenter', () => {
-                    clearInterval(autoPlayTimer);
-                });
-                sliderContainer.addEventListener('mouseleave', () => {
-                    if (sliderConfig.autoPlay) {
-                        startAutoPlay();
-                    }
-                });
-            }
+        // Create dots
+        slides.forEach((_, index) => {
+            const dot = document.createElement('button');
+            dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
+            dot.onclick = () => goToSlide(index);
+            dotsContainer.appendChild(dot);
         });
+
+        function updateSlider() {
+            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
+            
+            const dots = document.querySelectorAll('.slider-dot');
+            dots.forEach((dot, index) => {
+                dot.classList.toggle('active', index === currentSlide);
+            });
+        }
+
+        function goToSlide(index) {
+            currentSlide = index;
+            updateSlider();
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            updateSlider();
+        }
+
+        // Auto-play slider
+        setInterval(nextSlide, 4000);
     </script>
 </body>
 </html>

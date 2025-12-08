@@ -1,0 +1,24 @@
+# ========================================
+# FIREBASE CONFIGURATION
+# Copy semua baris di bawah ini ke file .env Anda
+# ========================================
+
+FIREBASE_API_KEY=AIzaSyCt4ytU_ebmj2ia-Pb6i8FFChk_0YQHl2o
+FIREBASE_AUTH_DOMAIN=portapps-2bd5c.firebaseapp.com
+FIREBASE_PROJECT_ID=portapps-2bd5c
+FIREBASE_STORAGE_BUCKET=portapps-2bd5c.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID=301903764008
+FIREBASE_APP_ID=1:301903764008:web:6e5f8c268290ec3439731d
+FIREBASE_MEASUREMENT_ID=G-ZMKGK92FJF
+
+# ========================================
+# CARA MENGGUNAKAN:
+# 1. Buka file .env di root project
+# 2. Scroll ke bawah
+# 3. Copy paste 7 baris FIREBASE_ di atas
+# 4. Save file .env
+# 5. Jalankan: php artisan config:clear
+# 6. Jalankan: php artisan serve
+# 7. Buka: http://localhost:8000/login
+# 8. Klik "Masuk dengan Google"
+# ========================================

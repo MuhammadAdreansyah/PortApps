@@ -29,6 +29,22 @@ class FortifyServiceProvider extends ServiceProvider
         $this->configureActions();
         $this->configureViews();
         $this->configureRateLimiting();
+        $this->configureNotifications();
+    }
+    
+    /**
+     * Configure notifications for auth events.
+     */
+    private function configureNotifications(): void
+    {
+        // Password reset link sent notification
+        \Illuminate\Auth\Notifications\ResetPassword::createUrlUsing(function ($notifiable, $token) {
+            notify()->success('Link reset password telah dikirim ke email Anda', 'Berhasil');
+            return url(route('password.reset', [
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ], false));
+        });
     }
 
     /**
@@ -38,6 +54,19 @@ class FortifyServiceProvider extends ServiceProvider
     {
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
         Fortify::createUsersUsing(CreateNewUser::class);
+        
+        // Custom Login Response
+        Fortify::authenticateUsing(function (Request $request) {
+            $user = \App\Models\User::where('email', $request->email)->first();
+            
+            if ($user && \Illuminate\Support\Facades\Hash::check($request->password, $user->password)) {
+                notify()->success('Login berhasil! Selamat datang kembali ' . $user->name, 'Berhasil');
+                return $user;
+            }
+            
+            notify()->error('Email atau password salah', 'Login Gagal');
+            return null;
+        });
     }
 
     /**
@@ -48,6 +77,13 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(fn () => view('auth.login'));
         Fortify::registerView(fn () => view('auth.register'));
         Fortify::requestPasswordResetLinkView(fn () => view('auth.forgot-password'));
+        
+        // Redirect after successful authentication
+        Fortify::redirects('login', fn () => route('user.home'));
+        Fortify::redirects('register', function () {
+            notify()->success('Registrasi berhasil! Selamat datang di PortApps', 'Berhasil');
+            return route('user.home');
+        });
         
         // Keep Livewire views for other auth pages
         Fortify::verifyEmailView(fn () => view('livewire.auth.verify-email'));

@@ -149,6 +149,9 @@
     <div class="grid grid-cols-2 gap-3 sm:gap-4">
         <button 
             type="button"
+            id="googleSignInBtn"
+            data-callback-url="{{ route('auth.google.callback') }}"
+            data-csrf-token="{{ csrf_token() }}"
             class="flex items-center justify-center gap-3 px-4 py-3.5 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100 transition-all duration-200 group"
         >
             <svg class="w-5 h-5 flex-shrink-0" viewBox="0 0 24 24">
@@ -163,7 +166,9 @@
         </button>
         <button 
             type="button"
-            class="flex items-center justify-center gap-3 px-4 py-3.5 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100 transition-all duration-200 group"
+            class="flex items-center justify-center gap-3 px-4 py-3.5 bg-white border border-gray-300 rounded-xl hover:bg-gray-50 hover:border-gray-400 active:bg-gray-100 transition-all duration-200 group opacity-50 cursor-not-allowed"
+            disabled
+            title="SSO akan segera tersedia"
         >
             <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
@@ -189,6 +194,116 @@
 @endsection
 
 @push('scripts')
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+    console.log('🔥 Firebase SDK loaded successfully');
+
+    // Firebase Configuration
+    const firebaseConfig = {
+        apiKey: "{{ config('services.firebase.api_key') }}",
+        authDomain: "{{ config('services.firebase.auth_domain') }}",
+        projectId: "{{ config('services.firebase.project_id') }}",
+        storageBucket: "{{ config('services.firebase.storage_bucket') }}",
+        messagingSenderId: "{{ config('services.firebase.messaging_sender_id') }}",
+        appId: "{{ config('services.firebase.app_id') }}",
+        measurementId: "{{ config('services.firebase.measurement_id') }}"
+    };
+
+    console.log('🔥 Firebase Config:', firebaseConfig);
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+    
+    console.log('✅ Firebase initialized, auth domain:', firebaseConfig.authDomain);
+
+    // Attach event listener immediately
+    const googleBtn = document.getElementById('googleSignInBtn');
+    if (googleBtn) {
+        googleBtn.addEventListener('click', async function() {
+            const button = this;
+            const buttonText = button.querySelector('span');
+            const originalText = buttonText.textContent;
+
+            try {
+                console.log('Google Sign In clicked...');
+                
+                // Show loading state
+                button.disabled = true;
+                buttonText.textContent = 'Memproses...';
+
+                // Sign in with Google popup
+                console.log('Opening Firebase popup...');
+                const result = await signInWithPopup(auth, provider);
+                const user = result.user;
+                
+                console.log('Firebase auth successful:', user.email);
+
+                // Get ID token
+                const idToken = await user.getIdToken();
+
+                // Send to backend
+                console.log('Sending to backend...');
+                const response = await fetch(button.dataset.callbackUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': button.dataset.csrfToken
+                    },
+                    body: JSON.stringify({
+                        token: idToken,
+                        email: user.email,
+                        name: user.displayName,
+                        google_id: user.uid,
+                        avatar: user.photoURL
+                    })
+                });
+
+                const data = await response.json();
+                console.log('Backend response:', data);
+
+                if (data.success) {
+                    buttonText.textContent = 'Berhasil! Mengalihkan...';
+                    window.location.href = data.redirect;
+                } else {
+                    throw new Error(data.message || 'Login gagal');
+                }
+            } catch (error) {
+                console.error('❌ Google Sign In Error:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+                
+                let errorMessage = 'Login dengan Google gagal: ';
+                
+                if (error.code === 'auth/unauthorized-domain') {
+                    errorMessage += 'Domain tidak ter-autorisasi. Coba:\n' +
+                                  '1. Hard refresh browser (Ctrl+Shift+R)\n' +
+                                  '2. Clear browser cache\n' +
+                                  '3. Tunggu 2-3 menit dan coba lagi\n' +
+                                  '4. Pastikan localhost sudah ditambahkan di Firebase Console';
+                } else if (error.code === 'auth/popup-blocked') {
+                    errorMessage += 'Popup diblokir oleh browser. Klik icon di address bar untuk allow popups.';
+                } else if (error.code === 'auth/popup-closed-by-user') {
+                    errorMessage += 'Popup ditutup sebelum selesai. Silakan coba lagi.';
+                } else {
+                    errorMessage += error.message || 'Terjadi kesalahan';
+                }
+                
+                alert(errorMessage);
+                button.disabled = false;
+                buttonText.textContent = originalText;
+            }
+        });
+        console.log('Google Sign In button listener attached');
+    } else {
+        console.error('Google Sign In button not found!');
+    }
+</script>
+
 <script>
     function togglePassword() {
         const passwordInput = document.getElementById('password');

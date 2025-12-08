@@ -8,9 +8,13 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
-    ->middleware(['auth', 'verified'])
-    ->name('dashboard');
+Route::get('home', function () {
+    return view('home');
+})->middleware(['auth'])->name('user.home');
+
+// Google Auth Routes
+Route::post('auth/google/callback', [App\Http\Controllers\GoogleAuthController::class, 'handleGoogleCallback'])
+    ->name('auth.google.callback');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');

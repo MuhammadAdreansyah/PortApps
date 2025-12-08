@@ -1,0 +1,31 @@
+# Instruksi Setup Firebase di .env
+
+Tambahkan konfigurasi berikut ke file `.env` Anda (buat file `.env` jika belum ada, copy dari `.env.example`):
+
+```env
+# Firebase Configuration
+FIREBASE_API_KEY=AIzaSyCt4ytU_ebmj2ia-Pb6i8FFChk_0YQHl2o
+FIREBASE_AUTH_DOMAIN=portapps-2bd5c.firebaseapp.com
+FIREBASE_PROJECT_ID=portapps-2bd5c
+FIREBASE_STORAGE_BUCKET=portapps-2bd5c.firebasestorage.app
+FIREBASE_MESSAGING_SENDER_ID=301903764008
+FIREBASE_APP_ID=1:301903764008:web:6e5f8c268290ec3439731d
+FIREBASE_MEASUREMENT_ID=G-ZMKGK92FJF
+```
+
+Setelah menambahkan konfigurasi di atas, jalankan:
+
+```bash
+php artisan config:clear
+php artisan cache:clear
+```
+
+Kemudian jalankan server:
+
+```bash
+php artisan serve
+```
+
+Akses aplikasi di: http://localhost:8000/login
+
+Klik tombol "Masuk dengan Google" untuk mencoba login!
