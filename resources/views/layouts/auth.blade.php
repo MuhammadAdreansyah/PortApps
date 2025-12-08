@@ -57,20 +57,40 @@
             min-height: 100vh;
         }
         
-        /* Lock hero section position */
+        /* Layout with form on left, hero floating inside on right */
+        .page-content {
+            position: relative;
+        }
+        
+        /* Form column takes specific width on left */
+        #formColumn {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Hero section positioned absolutely on the right side */
         .page-content > div:last-child {
-            position: fixed;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 58.333333%;
-            height: 100vh;
+            position: absolute;
+            right: 40px;
+            top: 40px;
+            bottom: 40px;
+            left: auto;
+            width: calc(58.333333% - 60px);
+            height: calc(100vh - 80px);
+            border-radius: 24px;
             overflow: hidden;
+            z-index: 2;
         }
         
         @media (min-width: 1280px) {
             .page-content > div:last-child {
-                width: 60%;
+                width: calc(60% - 60px);
+            }
+        }
+        
+        @media (max-width: 1023px) {
+            .page-content > div:last-child {
+                display: none;
             }
         }
         
@@ -163,6 +183,17 @@
         /* Simplified hero background */
         .hero-background {
             background: #23237E;
+            box-shadow: 0 20px 60px rgba(35, 35, 126, 0.3);
+        }
+        
+        /* Curved corners for hero section */
+        .hero-background::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 24px;
+            background: inherit;
+            z-index: -1;
         }
     </style>
     
@@ -174,7 +205,7 @@
     <div class="page-container">
         <div id="pageContent" class="page-content flex flex-col lg:flex-row">
             <!-- Left Column - Form Content -->
-            <div id="formColumn" class="w-full lg:w-5/12 xl:w-2/5 bg-white flex flex-col">
+            <div id="formColumn" class="w-full lg:w-5/12 xl:w-2/5 bg-white flex flex-col min-h-screen">
                 <div class="flex-1 flex flex-col px-6 py-8 sm:px-8 md:px-12 lg:px-16 xl:px-20">
                     <!-- Logo -->
                     <div class="mb-8 lg:mb-12 animate-fade-in">
@@ -202,8 +233,8 @@
             </div>
 
             <!-- Right Column - Hero Section with Dashboard Mockup -->
-            <div class="hidden lg:flex lg:w-7/12 xl:w-3/5 relative overflow-hidden hero-background">
-                <div class="relative z-10 flex items-center justify-center w-full p-8 xl:p-12">
+            <div class="hidden lg:flex relative overflow-hidden hero-background">
+                <div class="relative z-10 flex items-center justify-center w-full p-6 xl:p-8">
                     <div class="max-w-2xl w-full">
                         <!-- Hero Content -->
                         <div class="mb-6 text-center">
