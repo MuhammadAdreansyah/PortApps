@@ -30,11 +30,19 @@
         
         html {
             scroll-behavior: smooth;
-            overflow-y: scroll;
+            font-size: 16px;
         }
         
         body {
             overflow-x: hidden;
+            min-height: 100vh;
+        }
+        
+        /* Maintain consistent sizing on zoom */
+        @media (min-width: 1024px) {
+            html {
+                font-size: clamp(14px, 1vw, 16px);
+            }
         }
         
         /* Page Transition Animations */
@@ -60,37 +68,55 @@
         /* Layout with form on left, hero floating inside on right */
         .page-content {
             position: relative;
+            min-height: 100vh;
         }
         
         /* Form column takes specific width on left */
         #formColumn {
             position: relative;
             z-index: 1;
+            min-height: 100vh;
         }
         
-        /* Hero section positioned absolutely on the right side */
+        /* Hero section positioned absolutely, matching form height */
         .page-content > div:last-child {
             position: absolute;
-            right: 40px;
-            top: 40px;
-            bottom: 40px;
+            right: 2.5rem;
+            top: 2.5rem;
+            bottom: 2.5rem;
             left: auto;
-            width: calc(58.333333% - 60px);
-            height: calc(100vh - 80px);
-            border-radius: 24px;
+            width: calc(58.333333% - 3.75rem);
+            border-radius: 1.5rem;
             overflow: hidden;
             z-index: 2;
+            min-height: calc(100vh - 5rem);
         }
         
         @media (min-width: 1280px) {
             .page-content > div:last-child {
-                width: calc(60% - 60px);
+                width: calc(60% - 3.75rem);
             }
         }
         
+        /* Tablet */
+        @media (max-width: 1279px) and (min-width: 1024px) {
+            .page-content > div:last-child {
+                width: calc(58% - 3.75rem);
+                right: 2rem;
+                top: 2rem;
+                bottom: 2rem;
+                min-height: calc(100vh - 4rem);
+            }
+        }
+        
+        /* Hide on mobile */
         @media (max-width: 1023px) {
             .page-content > div:last-child {
                 display: none;
+            }
+            
+            #formColumn {
+                width: 100%;
             }
         }
         
@@ -153,9 +179,15 @@
         /* Modern dashboard mockup styles */
         .dashboard-card {
             background: white;
-            border-radius: 1rem;
+            border-radius: 0.75rem;
             padding: 1.25rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0.25rem 0.375rem -0.0625rem rgba(0, 0, 0, 0.1);
+        }
+        
+        @media (min-width: 1024px) {
+            .dashboard-card {
+                border-radius: 1rem;
+            }
         }
         
         .metric-value {
@@ -183,7 +215,9 @@
         /* Simplified hero background */
         .hero-background {
             background: #23237E;
-            box-shadow: 0 20px 60px rgba(35, 35, 126, 0.3);
+            box-shadow: 0 1.25rem 3.75rem rgba(35, 35, 126, 0.3);
+            display: flex;
+            flex-direction: column;
         }
         
         /* Curved corners for hero section */
@@ -191,9 +225,35 @@
             content: '';
             position: absolute;
             inset: 0;
-            border-radius: 24px;
+            border-radius: 1.5rem;
             background: inherit;
             z-index: -1;
+        }
+        
+        /* Ensure content stays within bounds */
+        .hero-content-wrapper {
+            overflow-y: auto;
+            overflow-x: hidden;
+            height: 100%;
+        }
+        
+        /* Custom scrollbar for hero section */
+        .hero-content-wrapper::-webkit-scrollbar {
+            width: 0.5rem;
+        }
+        
+        .hero-content-wrapper::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 0.25rem;
+        }
+        
+        .hero-content-wrapper::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 0.25rem;
+        }
+        
+        .hero-content-wrapper::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
     </style>
     
@@ -233,74 +293,75 @@
             </div>
 
             <!-- Right Column - Hero Section with Dashboard Mockup -->
-            <div class="hidden lg:flex relative overflow-hidden hero-background">
-                <div class="relative z-10 flex items-center justify-center w-full p-6 xl:p-8">
-                    <div class="max-w-2xl w-full">
+            <div class="hidden lg:flex relative hero-background">
+                <div class="hero-content-wrapper w-full">
+                    <div class="relative z-10 flex items-center justify-center w-full p-6 xl:p-8 min-h-full">
+                        <div class="max-w-2xl w-full">
                         <!-- Hero Content -->
-                        <div class="mb-6 text-center">
-                            <h2 class="text-2xl xl:text-3xl font-bold text-white mb-3 leading-tight">
+                        <div class="mb-4 lg:mb-6 text-center">
+                            <h2 class="text-xl lg:text-2xl xl:text-3xl font-bold text-white mb-2 lg:mb-3 leading-tight">
                                 Kelola Operasional Pelabuhan<br/>Dengan Mudah dan Efisien
                             </h2>
-                            <p class="text-white text-opacity-80 text-sm xl:text-base">
+                            <p class="text-white text-opacity-80 text-xs lg:text-sm xl:text-base">
                                 @yield('hero-description', 'Masuk untuk mengakses dashboard admin dan mengelola kegiatan bongkar muat kapal.')
                             </p>
                         </div>
                         
                         <!-- Dashboard Mockup -->
-                        <div class="bg-white rounded-xl shadow-2xl p-4 transform scale-90 hover:scale-95 transition-transform duration-300">
+                        <div class="bg-white rounded-lg lg:rounded-xl shadow-2xl p-3 lg:p-4 transition-transform duration-300">
                             <!-- macOS Window Controls -->
-                            <div class="flex items-center gap-2 mb-4">
-                                <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                                <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
-                                <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                            <div class="flex items-center gap-1.5 lg:gap-2 mb-3 lg:mb-4">
+                                <div class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-red-500"></div>
+                                <div class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-yellow-400"></div>
+                                <div class="w-2.5 h-2.5 lg:w-3 lg:h-3 rounded-full bg-green-500"></div>
                             </div>
                             
                             <!-- Top Metrics Row -->
-                            <div class="grid grid-cols-3 gap-3 mb-4">
-                                <div class="dashboard-card text-white p-3" style="background-color: #23237E;">
-                                    <div class="text-xs opacity-90 mb-1">Total Kapal Bulan Ini</div>
-                                    <div class="text-lg font-bold">127 Unit</div>
+                            <div class="grid grid-cols-3 gap-2 lg:gap-3 mb-3 lg:mb-4">
+                                <div class="dashboard-card text-white p-2 lg:p-3" style="background-color: #23237E;">
+                                    <div class="text-[0.65rem] lg:text-xs opacity-90 mb-0.5 lg:mb-1">Total Kapal Bulan Ini</div>
+                                    <div class="text-sm lg:text-lg font-bold">127 Unit</div>
                                 </div>
-                                <div class="dashboard-card p-3">
-                                    <div class="text-xs text-gray-500">Muatan Terbongkar</div>
-                                    <div class="text-lg font-bold text-gray-900">8,542 Ton</div>
+                                <div class="dashboard-card p-2 lg:p-3">
+                                    <div class="text-[0.65rem] lg:text-xs text-gray-500">Muatan Terbongkar</div>
+                                    <div class="text-sm lg:text-lg font-bold text-gray-900">8,542 Ton</div>
                                 </div>
-                                <div class="dashboard-card p-3">
-                                    <div class="text-xs text-gray-500">Kapal Aktif</div>
-                                    <div class="text-lg font-bold text-gray-900">18 Unit</div>
+                                <div class="dashboard-card p-2 lg:p-3">
+                                    <div class="text-[0.65rem] lg:text-xs text-gray-500">Kapal Aktif</div>
+                                    <div class="text-sm lg:text-lg font-bold text-gray-900">18 Unit</div>
                                 </div>
                             </div>
                             
                             <!-- Chart and Progress Row -->
-                            <div class="grid grid-cols-2 gap-3 mb-4">
-                                <div class="dashboard-card p-3">
-                                    <div class="text-xs text-gray-500 mb-2">Grafik Aktivitas Harian</div>
-                                    <svg class="w-full h-16" viewBox="0 0 100 40">
+                            <div class="grid grid-cols-2 gap-2 lg:gap-3 mb-3 lg:mb-4">
+                                <div class="dashboard-card p-2 lg:p-3">
+                                    <div class="text-[0.65rem] lg:text-xs text-gray-500 mb-1 lg:mb-2">Grafik Aktivitas Harian</div>
+                                    <svg class="w-full h-12 lg:h-16" viewBox="0 0 100 40">
                                         <polyline class="chart-line" points="0,35 20,30 40,20 60,25 80,10 100,15"/>
                                     </svg>
                                 </div>
-                                <div class="dashboard-card flex items-center justify-center p-3">
-                                    <svg class="w-20 h-20">
+                                <div class="dashboard-card flex items-center justify-center p-2 lg:p-3">
+                                    <svg class="w-16 h-16 lg:w-20 lg:h-20">
                                         <circle cx="40" cy="40" r="32" fill="none" stroke="#E5E7EB" stroke-width="6"/>
                                         <circle class="progress-circle" cx="40" cy="40" r="32" fill="none" stroke="#23237E" stroke-width="6" stroke-dasharray="201" stroke-dashoffset="50.25" stroke-linecap="round"/>
-                                        <text x="40" y="44" text-anchor="middle" class="text-lg font-bold fill-gray-900">75%</text>
+                                        <text x="40" y="44" text-anchor="middle" class="text-base lg:text-lg font-bold fill-gray-900">75%</text>
                                     </svg>
                                 </div>
                             </div>
                             
                             <!-- Data Table -->
-                            <div class="dashboard-card p-3">
-                                <div class="text-xs font-semibold text-gray-700 mb-2">Aktivitas Terkini</div>
-                                <div class="space-y-1.5">
-                                    <div class="flex items-center justify-between text-xs py-1.5 border-b border-gray-100">
+                            <div class="dashboard-card p-2 lg:p-3">
+                                <div class="text-[0.65rem] lg:text-xs font-semibold text-gray-700 mb-1.5 lg:mb-2">Aktivitas Terkini</div>
+                                <div class="space-y-1 lg:space-y-1.5">
+                                    <div class="flex items-center justify-between text-[0.65rem] lg:text-xs py-1 lg:py-1.5 border-b border-gray-100">
                                         <span class="text-gray-600">KM. Sinar Harapan</span>
                                         <span class="text-green-600 font-semibold">Bongkar</span>
                                     </div>
-                                    <div class="flex items-center justify-between text-xs py-1.5 border-b border-gray-100">
+                                    <div class="flex items-center justify-between text-[0.65rem] lg:text-xs py-1 lg:py-1.5 border-b border-gray-100">
                                         <span class="text-gray-600">KM. Mutiara Timur</span>
                                         <span class="text-blue-600 font-semibold">Muat</span>
                                     </div>
-                                    <div class="flex items-center justify-between text-xs py-1.5">
+                                    <div class="flex items-center justify-between text-[0.65rem] lg:text-xs py-1 lg:py-1.5">
                                         <span class="text-gray-600">KM. Nusantara Jaya</span>
                                         <span class="text-green-600 font-semibold">Bongkar</span>
                                     </div>
@@ -311,6 +372,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- Navigation Script -->
